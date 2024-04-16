@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+    
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PoisoningIncidentApplication.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0" Spacing="25">
+            <Label Text="Sök Produkt"
+                   Style="{StaticResource Headline}"
+                   SemanticProperties.HeadingLevel="Level1" />
+
+            <SearchBar x:Name="ProductSearchBar"
+                       Placeholder="Sök produkt..."
+                       BackgroundColor="LightGray"
+                       PlaceholderColor="Black"
+                       HorizontalOptions="Fill" />
+
+            <Button x:Name="SearchBtn"
+                    Text="Sök"
+                    SemanticProperties.Hint="Search for poisonous products"
+                    Clicked="OnSearchClicked"
+                    HorizontalOptions="Fill" />
+
+            <!-- This Label will display the search results -->
+            <Label x:Name="SearchResultsLabel"
+                   Text="Search results will be shown here"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,20,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
