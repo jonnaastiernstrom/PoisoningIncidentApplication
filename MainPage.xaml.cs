@@ -1,4 +1,5 @@
 ﻿using Microsoft.Maui.Controls;
+using System.Globalization;
 
 
 namespace PoisoningIncidentApplication
@@ -19,6 +20,11 @@ namespace PoisoningIncidentApplication
             ProductSearchBar.Unfocus();
             // Use the text from the SearchBar for the query
             string searchTerm = ProductSearchBar.Text;
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                // Make the first character uppercase and the rest lowercase
+                searchTerm = char.ToUpper(searchTerm[0], CultureInfo.CurrentCulture) + searchTerm.Substring(1).ToLower(CultureInfo.CurrentCulture);
+            }
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
