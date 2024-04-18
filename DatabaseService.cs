@@ -15,7 +15,7 @@ namespace PoisoningIncidentApplication
         //public DatabaseService()
         //{
         //    // Use a secure method to store and retrieve your connection string.
-
+        
         //    _connectionString = "Host=localhost;Port:5432;Username=postgres;Password=Edgar20230414!;Database=giftinformationscentralendb";
         //    _connectionString = "Host=10.0.2.2:5432;Username=postgres;Password=Edgar20230414!;Database=giftinformationscentralendb";
 
@@ -40,7 +40,7 @@ namespace PoisoningIncidentApplication
         }
 
        public async Task<string> GetProductByNameAsync(string productName)
-        {
+       {
             string product = null;
             
             await using (var connection = new NpgsqlConnection(_connectionString))
@@ -61,6 +61,32 @@ namespace PoisoningIncidentApplication
             }
             
             return product;
+       }
+       public async Task<string> GetProductDescriptionByNameAsync(string productName)
+        {
+            string description = null;
+
+            await using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                // The SQL query joins the products table with the danger_levels table to get the description
+                await using (var command = new NpgsqlCommand("SELECT dl.description FROM products p INNER JOIN danger_levels dl ON p.danger_level = dl.level WHERE p.product_name = @productName", connection))
+                {
+                    command.Parameters.AddWithValue("@productName", productName);
+
+                    await using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            // Assuming description is the first column due to the SELECT statement only requesting the description
+                            description = reader.GetString(0);
+                            description = description.Replace("\\n", "\n");
+                        }
+                    }
+                }
+            }
+
+            return description;
         }
 
     }

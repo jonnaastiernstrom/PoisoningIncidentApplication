@@ -15,6 +15,8 @@ namespace PoisoningIncidentApplication
 
         private async void OnSearchClicked(object sender, EventArgs e)
         {
+            
+            ProductSearchBar.Unfocus();
             // Use the text from the SearchBar for the query
             string searchTerm = ProductSearchBar.Text;
 
@@ -23,17 +25,21 @@ namespace PoisoningIncidentApplication
                 var productName = await _databaseService.GetProductByNameAsync(searchTerm);
                 if (productName != null)
                 {
-                    SearchResultsLabel.Text = $"Product found: {productName}";
+                    string description = await _databaseService.GetProductDescriptionByNameAsync(productName);
+                    DescriptionHeaderLabel.IsVisible = true;
+                    SearchResultsLabel.Text = $"Hittade 1 träff på din sökning: {productName}";
+                    DescriptionLabel.IsVisible = true;
+                    DescriptionLabel.Text = $"{description}";
                 }
                 else
                 {
-                    SearchResultsLabel.Text = "Product not found.";
+                    SearchResultsLabel.Text = $"Hittade 0 träffar på din sökning: {searchTerm}";
+                    DescriptionHeaderLabel.IsVisible =false;
+                    DescriptionLabel.IsVisible =false;
                 }
             }
-            else
-            {
-                SearchResultsLabel.Text = "Please enter a product name to search.";
-            }
+          
+
         }
     }
 }
