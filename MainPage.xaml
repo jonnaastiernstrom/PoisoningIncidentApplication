@@ -27,11 +27,21 @@
                        Placeholder="Sök..."
                        BackgroundColor="LightGray"
                        PlaceholderColor="Black"
-                       HorizontalOptions="Fill" />
-                
-                
-               
-            <Button x:Name="SearchBtn"
+                       HorizontalOptions="Fill" 
+                       TextChanged="ProductSearchBar_TextChanged"/>
+
+                <ListView x:Name="SuggestionsList" IsVisible="false">
+                    <!-- ListView for displaying suggestions IsVisible="false"-->
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding}" />
+                            <!-- Binding to the string item -->
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+
+                <Button x:Name="SearchBtn"
                     Text="Sök"
                     BackgroundColor="#143c64"
                     SemanticProperties.Hint="Search for poisonous products"

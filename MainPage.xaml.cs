@@ -11,12 +11,12 @@ namespace PoisoningIncidentApplication
         public MainPage()
         {
             InitializeComponent();
-            _databaseService = new DatabaseService();
+            _databaseService = new DatabaseService();              
         }
 
         private async void OnSearchClicked(object sender, EventArgs e)
         {
-            
+
             ProductSearchBar.Unfocus();
             // Use the text from the SearchBar for the query
             string searchTerm = ProductSearchBar.Text;
@@ -40,12 +40,30 @@ namespace PoisoningIncidentApplication
                 else
                 {
                     SearchResultsLabel.Text = $"Hittade 0 träffar på din sökning: {searchTerm}";
-                    DescriptionHeaderLabel.IsVisible =false;
-                    DescriptionLabel.IsVisible =false;
+                    DescriptionHeaderLabel.IsVisible = false;
+                    DescriptionLabel.IsVisible = false;
                 }
             }
-          
 
+
+        }
+        private async void ProductSearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+
+
+            if (!string.IsNullOrWhiteSpace(e.NewTextValue))
+            {
+                SuggestionsList.IsVisible = true;
+                var suggestions = await _databaseService.GetProductSuggestionsAsync(e.NewTextValue);
+                SuggestionsList.ItemsSource = suggestions;
+                SuggestionsList.IsVisible = suggestions.Any(); // Only show the ListView if there are suggestions
+               
+            }
+            else
+            {
+                SuggestionsList.IsVisible = false; // Hide the ListView when there is no input
+            }
         }
     }
 }

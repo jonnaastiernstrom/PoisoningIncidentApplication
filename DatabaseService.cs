@@ -88,6 +88,31 @@ namespace PoisoningIncidentApplication
 
             return description;
         }
+        public async Task<List<string>> GetProductSuggestionsAsync(string searchTerm)
+        {
+            var products = new List<string>();
+
+            await using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                // Use ILIKE for case-insensitive matching and a wildcard to match any sequence of characters after the input
+                await using (var command = new NpgsqlCommand("SELECT product_name FROM products WHERE product_name ILIKE @searchTerm", connection))
+                {
+                    command.Parameters.AddWithValue("@searchTerm", $"{searchTerm}%");  // Append a wildcard to the search term
+
+                    await using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            products.Add(reader.GetString(0));  // Add each matching product name to the list
+                        }
+                    }
+                }
+            }
+
+            return products;
+        }
+
 
     }
 }
