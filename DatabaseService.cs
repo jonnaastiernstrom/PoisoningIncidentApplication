@@ -12,14 +12,7 @@ namespace PoisoningIncidentApplication
     {
         private readonly string _connectionString;
 
-        //public DatabaseService()
-        //{
-        //    // Use a secure method to store and retrieve your connection string.
-        
-        //    _connectionString = "Host=localhost;Port:5432;Username=postgres;Password=Edgar20230414!;Database=giftinformationscentralendb";
-        //    _connectionString = "Host=10.0.2.2:5432;Username=postgres;Password=Edgar20230414!;Database=giftinformationscentralendb";
-
-        //}
+     
         public DatabaseService()
         {
             // Default connection string for Windows and iOS

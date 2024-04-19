@@ -28,39 +28,39 @@ namespace PoisoningIncidentApplication
             SuggestionsCollection.IsVisible = false;
         }
 
-        private async void OnSearchClicked(object sender, EventArgs e)
-        {
+        //private async void OnSearchClicked(object sender, EventArgs e)
+        //{
 
-            ProductSearchBar.Unfocus();
-            // Use the text from the SearchBar for the query
-            string searchTerm = ProductSearchBar.Text;
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                // Make the first character uppercase and the rest lowercase
-                searchTerm = char.ToUpper(searchTerm[0], CultureInfo.CurrentCulture) + searchTerm.Substring(1).ToLower(CultureInfo.CurrentCulture);
-            }
+        //    ProductSearchBar.Unfocus();
+        //    // Use the text from the SearchBar for the query
+        //    string searchTerm = ProductSearchBar.Text;
+        //    if (!string.IsNullOrEmpty(searchTerm))
+        //    {
+        //        // Make the first character uppercase and the rest lowercase
+        //        searchTerm = char.ToUpper(searchTerm[0], CultureInfo.CurrentCulture) + searchTerm.Substring(1).ToLower(CultureInfo.CurrentCulture);
+        //    }
 
-            if (!string.IsNullOrWhiteSpace(searchTerm))
-            {
-                var productName = await _databaseService.GetProductByNameAsync(searchTerm);
-                if (productName != null)
-                {
-                    string description = await _databaseService.GetProductDescriptionByNameAsync(productName);
-                    DescriptionHeaderLabel.IsVisible = true;
-                    SearchResultsLabel.Text = $"Hittade 1 träff på din sökning: {productName}";
-                    DescriptionLabel.IsVisible = true;
-                    DescriptionLabel.Text = $"{description}";
-                }
-                else
-                {
-                    SearchResultsLabel.Text = $"Hittade 0 träffar på din sökning: {searchTerm}";
-                    DescriptionHeaderLabel.IsVisible = false;
-                    DescriptionLabel.IsVisible = false;
-                }
-            }
+        //    if (!string.IsNullOrWhiteSpace(searchTerm))
+        //    {
+        //        var productName = await _databaseService.GetProductByNameAsync(searchTerm);
+        //        if (productName != null)
+        //        {
+        //            string description = await _databaseService.GetProductDescriptionByNameAsync(productName);
+        //            DescriptionHeaderLabel.IsVisible = true;
+        //            SearchResultsLabel.Text = $"Hittade 1 träff på din sökning: {productName}";
+        //            DescriptionLabel.IsVisible = true;
+        //            DescriptionLabel.Text = $"{description}";
+        //        }
+        //        else
+        //        {
+        //            SearchResultsLabel.Text = $"Hittade 0 träffar på din sökning: {searchTerm}";
+        //            DescriptionHeaderLabel.IsVisible = false;
+        //            DescriptionLabel.IsVisible = false;
+        //        }
+        //    }
 
 
-        }
+        //}
         private async void ProductSearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
             const int itemHeight = 20; // The estimated height of each item
@@ -82,18 +82,62 @@ namespace PoisoningIncidentApplication
             }
         }
 
+        //private async void OnSuggestionSelected(object sender, SelectionChangedEventArgs e)
+        //{
+        //    var selectedItem = e.CurrentSelection.FirstOrDefault() as string;
+        //    if (selectedItem != null)
+        //    {
+        //        // Handle the selection
+        //        ProductSearchBar.Text = selectedItem; // Set the selected item as the search bar text
+        //        SuggestionsCollection.IsVisible = false; // Hide the suggestions
+        //        //SuggestionsCollection.ItemsSource = null;     
+        //    }
+        //}
+        private async void OnSearchClicked(object sender, EventArgs e)
+        {
+            ProductSearchBar.Unfocus();
+            string searchTerm = ProductSearchBar.Text;
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                searchTerm = char.ToUpper(searchTerm[0], CultureInfo.CurrentCulture) + searchTerm.Substring(1).ToLower(CultureInfo.CurrentCulture);
+                await PerformSearch(searchTerm);
+            }
+        }
+
         private async void OnSuggestionSelected(object sender, SelectionChangedEventArgs e)
         {
             var selectedItem = e.CurrentSelection.FirstOrDefault() as string;
             if (selectedItem != null)
             {
-                // Handle the selection
                 ProductSearchBar.Text = selectedItem; // Set the selected item as the search bar text
                 SuggestionsCollection.IsVisible = false; // Hide the suggestions
-                //SuggestionsCollection.ItemsSource = null;     
+
+                // Trigger the search
+                await PerformSearch(selectedItem);
             }
         }
 
+        private async Task PerformSearch(string searchTerm)
+        {
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var productName = await _databaseService.GetProductByNameAsync(searchTerm);
+                if (productName != null)
+                {
+                    string description = await _databaseService.GetProductDescriptionByNameAsync(productName);
+                    DescriptionHeaderLabel.IsVisible = true;
+                    SearchResultsLabel.Text = $"Hittade 1 träff på din sökning: {productName}";
+                    DescriptionLabel.IsVisible = true;
+                    DescriptionLabel.Text = description;
+                }
+                else
+                {
+                    SearchResultsLabel.Text = $"Hittade 0 träffar på din sökning: {searchTerm}";
+                    DescriptionHeaderLabel.IsVisible = false;
+                    DescriptionLabel.IsVisible = false;
+                }
+            }
+        }
 
 
 
