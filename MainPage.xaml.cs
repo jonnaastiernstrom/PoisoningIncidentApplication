@@ -7,11 +7,25 @@ namespace PoisoningIncidentApplication
     public partial class MainPage : ContentPage
     {
         private readonly DatabaseService _databaseService;
+        private bool _isSuggestionsVisible;
+        public bool IsSuggestionsVisible
+        {
+            get => _isSuggestionsVisible;
+            set
+            {
+                if (_isSuggestionsVisible != value)
+                {
+                    _isSuggestionsVisible = value;
+                    OnPropertyChanged(nameof(IsSuggestionsVisible));
+                }
+            }
+        }
 
         public MainPage()
         {
             InitializeComponent();
-            _databaseService = new DatabaseService();              
+            _databaseService = new DatabaseService();
+            SuggestionsCollection.IsVisible = false;
         }
 
         private async void OnSearchClicked(object sender, EventArgs e)
@@ -49,21 +63,39 @@ namespace PoisoningIncidentApplication
         }
         private async void ProductSearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
-
+            const int itemHeight = 20; // The estimated height of each item
+            const int maxHeight = 100; // The maximum height you want for the CollectionView
 
             if (!string.IsNullOrWhiteSpace(e.NewTextValue))
             {
-                SuggestionsList.IsVisible = true;
                 var suggestions = await _databaseService.GetProductSuggestionsAsync(e.NewTextValue);
-                SuggestionsList.ItemsSource = suggestions;
-                SuggestionsList.IsVisible = suggestions.Any(); // Only show the ListView if there are suggestions
-               
+                SuggestionsCollection.ItemsSource = suggestions;
+                SuggestionsCollection.IsVisible = suggestions.Any();
+
+                // Calculate the height based on the number of items, but do not exceed the maximum height
+                var desiredHeight = suggestions.Count() * itemHeight;
+                SuggestionsCollection.HeightRequest = Math.Min(desiredHeight, maxHeight);
             }
             else
             {
-                SuggestionsList.IsVisible = false; // Hide the ListView when there is no input
+                SuggestionsCollection.IsVisible = false;
             }
         }
+
+        private async void OnSuggestionSelected(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = e.CurrentSelection.FirstOrDefault() as string;
+            if (selectedItem != null)
+            {
+                // Handle the selection
+                ProductSearchBar.Text = selectedItem; // Set the selected item as the search bar text
+                SuggestionsCollection.IsVisible = false; // Hide the suggestions
+                //SuggestionsCollection.ItemsSource = null;     
+            }
+        }
+
+
+
+
     }
 }

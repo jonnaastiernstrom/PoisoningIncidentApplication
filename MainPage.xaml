@@ -30,15 +30,17 @@
                        HorizontalOptions="Fill" 
                        TextChanged="ProductSearchBar_TextChanged"/>
 
-                <ListView x:Name="SuggestionsList" IsVisible="false">
-                    <!-- ListView for displaying suggestions IsVisible="false"-->
-                    <ListView.ItemTemplate>
+                <CollectionView x:Name="SuggestionsCollection" 
+                IsVisible="{Binding IsSuggestionsVisible}"
+                SelectionMode="Single" 
+                    SelectionChanged="OnSuggestionSelected" MaximumHeightRequest="100">
+                    <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <TextCell Text="{Binding}" />
-                            <!-- Binding to the string item -->
+                            <Label Text="{Binding .}" />
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
 
 
                 <Button x:Name="SearchBtn"
