@@ -72,6 +72,9 @@ namespace PoisoningIncidentApplication
             }
         }
 
+      
+        //GÖR SÅ ATT MAN KAN KLICKA FLERA GÅNGER PÅ SAMMA SUGGESTION
+
         private async void OnSuggestionSelected(object sender, SelectionChangedEventArgs e)
         {
             var selectedItem = e.CurrentSelection.FirstOrDefault() as string;
@@ -82,6 +85,9 @@ namespace PoisoningIncidentApplication
 
                 // Trigger the search
                 await PerformSearch(selectedItem);
+
+                // Clear selection
+                ((CollectionView)sender).SelectedItem = null;
             }
         }
 
