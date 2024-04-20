@@ -72,7 +72,7 @@ namespace PoisoningIncidentApplication
             }
         }
 
-      
+
         //GÖR SÅ ATT MAN KAN KLICKA FLERA GÅNGER PÅ SAMMA SUGGESTION
 
         private async void OnSuggestionSelected(object sender, SelectionChangedEventArgs e)
@@ -81,15 +81,21 @@ namespace PoisoningIncidentApplication
             if (selectedItem != null)
             {
                 ProductSearchBar.Text = selectedItem; // Set the selected item as the search bar text
-                SuggestionsCollection.IsVisible = false; // Hide the suggestions
+
+                // Clear selection
+                ((CollectionView)sender).SelectedItem = null;
 
                 // Trigger the search
                 await PerformSearch(selectedItem);
 
-                // Clear selection
-                ((CollectionView)sender).SelectedItem = null;
+                // Ensure we are on the main thread when we update the UI
+                Dispatcher.Dispatch(() =>
+                {
+                    SuggestionsCollection.IsVisible = false; // Hide the suggestions
+                });
             }
         }
+
 
         private async Task PerformSearch(string searchTerm)
         {
