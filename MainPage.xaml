@@ -1,44 +1,71 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-    
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PoisoningIncidentApplication.MainPage"
-             Title="Hem" >
-    
+             Title="Hem">
+
     <ScrollView>
-        <VerticalStackLayout Spacing="15">
-            
-            <HorizontalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-                <!-- Image and Label here -->               
-                <Label x:Name="TitelLabel" 
-                   Text="Giftinformationscentralen"
-                   VerticalOptions="Center"
-                   HorizontalTextAlignment="Start"
-                   Margin="50,20,50,0" />
+        <VerticalStackLayout Spacing="15" HorizontalOptions="FillAndExpand">
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand">
+                <Label x:Name="TitelLabel"
+                       Text="Giftinformationscentralen"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Start"
+                       Margin="50,20,50,0" />
                 <Image Source="giftinformationscentralen_logo.png"
                        WidthRequest="50"
                        VerticalOptions="Center" />
             </HorizontalStackLayout>
-            
-            <VerticalStackLayout Padding="20,0" Spacing="15">
-            
-            
-            <SearchBar x:Name="ProductSearchBar"
-                       Placeholder="Sök..."
-                       BackgroundColor="LightGray"
-                       PlaceholderColor="Black"
-                       HorizontalOptions="Fill" 
-                       TextChanged="ProductSearchBar_TextChanged"/>
 
-             
-                
-                <CollectionView x:Name="SuggestionsCollection" 
-  IsVisible="{Binding IsSuggestionsVisible}"
-  SelectionMode="Single" 
-  SelectionChanged="OnSuggestionSelected" MaximumHeightRequest="100">
+            <VerticalStackLayout Padding="20,0" Spacing="15">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="-3">
+                    <Border Stroke="#143c64"  
+                        StrokeThickness="2"
+                        
+                        
+                     
+                        Padding="0"
+                      
+                        HorizontalOptions="Center"
+                     
+                        VerticalOptions="Center">
+                       
+                        <SearchBar x:Name="ProductSearchBar"
+               Placeholder="Sök..."
+               VerticalOptions="Center"
+               BackgroundColor="White"
+               HeightRequest="40"
+               WidthRequest="250"
+               TextChanged="ProductSearchBar_TextChanged" />
+                    </Border>
+
+                    <Border
+                        Stroke="#143c64"  
+                        StrokeThickness="2"
+                        >
+                        <Button x:Name="SearchBtn"
+                                CornerRadius="1"
+                            Text="Sök"
+                            BackgroundColor="#FF4081"
+                            WidthRequest="80"
+                            HeightRequest="40"
+                            VerticalOptions="Center"
+                            TextColor="White"
+                            Clicked="OnSearchClicked"
+                           />
+                    </Border>
+                </HorizontalStackLayout>
+
+                <CollectionView x:Name="SuggestionsCollection"
+                                IsVisible="{Binding IsSuggestionsVisible}"
+                                SelectionMode="Single"
+                                SelectionChanged="OnSuggestionSelected"
+                                MaximumHeightRequest="100">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid >
+                            <Grid>
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroupList>
                                         <VisualStateGroup x:Name="CommonStates">
@@ -57,40 +84,26 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-
-
-
-                <Button x:Name="SearchBtn"
-                    Text="Sök"
-                    BackgroundColor="#143c64"
-                    SemanticProperties.Hint="Search for poisonous products"
-                    Clicked="OnSearchClicked"
-                    HorizontalOptions="Fill" />
-
-            <!-- This Label will display the search results -->
-            <Label x:Name="SearchResultsLabel"                   
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   Margin="0,20,0,0" />
+                <Label x:Name="SearchResultsLabel"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,20,0,0" />
 
                 <Label x:Name="DescriptionHeaderLabel"
-                   Text="Åtgärd:"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   VerticalTextAlignment="Center"
-                   Margin="0,0,0,0"
-                       IsVisible="False"
-                />
+                       Text="Åtgärd:"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="0,0,0,0"
+                       IsVisible="False" />
 
                 <Label x:Name="DescriptionLabel"
-                   HorizontalOptions="Start"
-                   HorizontalTextAlignment="Start"
-                   VerticalTextAlignment="Start"
-                   Margin="0,0,0,0"
-                   LineBreakMode="WordWrap"
-                   MaxLines="0" /> 
-
-
+                       HorizontalOptions="Start"
+                       HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Start"
+                       Margin="0,0,0,0"
+                       LineBreakMode="WordWrap"
+                       MaxLines="0" />
             </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

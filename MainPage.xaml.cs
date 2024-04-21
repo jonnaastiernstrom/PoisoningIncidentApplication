@@ -64,6 +64,7 @@ namespace PoisoningIncidentApplication
         private async void OnSearchClicked(object sender, EventArgs e)
         {
             ProductSearchBar.Unfocus();
+            SuggestionsCollection.IsVisible = false;
             string searchTerm = ProductSearchBar.Text;
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -92,6 +93,7 @@ namespace PoisoningIncidentApplication
                 Dispatcher.Dispatch(() =>
                 {
                     SuggestionsCollection.IsVisible = false; // Hide the suggestions
+                    ProductSearchBar.Unfocus();
                 });
             }
         }
