@@ -53,7 +53,7 @@ namespace PoisoningIncidentApplication
             {
                 DescriptionLabel.Text = "";
                 SearchResultsLabel.Text = "";
-                DescriptionHeaderLabel.Text = "";
+                DescriptionHeaderLabel.IsVisible = false;
 
             }
 
@@ -65,9 +65,11 @@ namespace PoisoningIncidentApplication
         {
             ProductSearchBar.Unfocus();
             SuggestionsCollection.IsVisible = false;
+           
             string searchTerm = ProductSearchBar.Text;
             if (!string.IsNullOrEmpty(searchTerm))
             {
+                DescriptionHeaderLabel.IsVisible = true;
                 searchTerm = char.ToUpper(searchTerm[0], CultureInfo.CurrentCulture) + searchTerm.Substring(1).ToLower(CultureInfo.CurrentCulture);
                 await PerformSearch(searchTerm);
             }
@@ -82,6 +84,7 @@ namespace PoisoningIncidentApplication
             if (selectedItem != null)
             {
                 ProductSearchBar.Text = selectedItem; // Set the selected item as the search bar text
+                DescriptionHeaderLabel.IsVisible = true;
 
                 // Clear selection
                 ((CollectionView)sender).SelectedItem = null;

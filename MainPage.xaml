@@ -6,7 +6,7 @@
              Title="Hem">
 
     <ScrollView>
-        <VerticalStackLayout Spacing="15" HorizontalOptions="FillAndExpand">
+        <VerticalStackLayout Spacing="15" HorizontalOptions="FillAndExpand" Padding="0">
 
             <HorizontalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand">
                 <Label x:Name="TitelLabel"
@@ -19,50 +19,45 @@
                        VerticalOptions="Center" />
             </HorizontalStackLayout>
 
-            <VerticalStackLayout Padding="20,0" Spacing="15">
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="-3">
+            <VerticalStackLayout HorizontalOptions="CenterAndExpand" Spacing="15" Padding="0">
+
+
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="0">
+
                     <Border Stroke="#143c64"  
-                        StrokeThickness="2"
-                        
-                        
-                     
-                        Padding="0"
-                      
-                        HorizontalOptions="Center"
-                     
-                        VerticalOptions="Center">
-                       
-                        <SearchBar x:Name="ProductSearchBar"
-               Placeholder="Sök..."
-               VerticalOptions="Center"
-               BackgroundColor="White"
-               HeightRequest="40"
-               WidthRequest="250"
-               TextChanged="ProductSearchBar_TextChanged" />
+                    StrokeThickness="1"
+                    Padding="0"   
+                    HorizontalOptions="Center"  
+                    VerticalOptions="Center">
+                <SearchBar x:Name="ProductSearchBar"
+                            Placeholder="Sök..."
+                            VerticalOptions="Center"
+                            BackgroundColor="White"
+                            HeightRequest="40"
+                            WidthRequest="290"
+                            TextChanged="ProductSearchBar_TextChanged"/> 
                     </Border>
 
-                    <Border
-                        Stroke="#143c64"  
-                        StrokeThickness="2"
-                        >
-                        <Button x:Name="SearchBtn"
-                                CornerRadius="1"
+                    <Button x:Name="SearchBtn"
+                            CornerRadius="2"
                             Text="Sök"
-                            BackgroundColor="#FF4081"
+                            
+                            BackgroundColor="#d63868"
                             WidthRequest="80"
-                            HeightRequest="40"
+                            HeightRequest="42"
                             VerticalOptions="Center"
                             TextColor="White"
-                            Clicked="OnSearchClicked"
-                           />
-                    </Border>
-                </HorizontalStackLayout>
+                            Clicked="OnSearchClicked"/> 
 
+
+
+                </HorizontalStackLayout>
                 <CollectionView x:Name="SuggestionsCollection"
                                 IsVisible="{Binding IsSuggestionsVisible}"
                                 SelectionMode="Single"
                                 SelectionChanged="OnSuggestionSelected"
-                                MaximumHeightRequest="100">
+                                MaximumHeightRequest="100"
+                                Margin="15,0,15,0">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -101,7 +96,7 @@
                        HorizontalOptions="Start"
                        HorizontalTextAlignment="Start"
                        VerticalTextAlignment="Start"
-                       Margin="0,0,0,0"
+                       Margin="20,0,20,0"
                        LineBreakMode="WordWrap"
                        MaxLines="0" />
             </VerticalStackLayout>
