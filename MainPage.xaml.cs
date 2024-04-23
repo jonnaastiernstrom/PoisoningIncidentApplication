@@ -26,6 +26,7 @@ namespace PoisoningIncidentApplication
             InitializeComponent();
             _databaseService = new DatabaseService();
             SuggestionsCollection.IsVisible = false;
+            SuggestionFrame.IsVisible = false;
         }
 
        
@@ -39,6 +40,7 @@ namespace PoisoningIncidentApplication
                 var suggestions = await _databaseService.GetProductSuggestionsAsync(e.NewTextValue);
                 SuggestionsCollection.ItemsSource = suggestions;
                 SuggestionsCollection.IsVisible = suggestions.Any();
+                SuggestionFrame.IsVisible = suggestions.Any();
 
                 // Calculate the height based on the number of items, but do not exceed the maximum height
                 var desiredHeight = suggestions.Count() * itemHeight;
@@ -47,6 +49,7 @@ namespace PoisoningIncidentApplication
             else
             {
                 SuggestionsCollection.IsVisible = false;
+                SuggestionFrame.IsVisible= false;
             }
 
             if (string.IsNullOrWhiteSpace(e.NewTextValue))
@@ -65,6 +68,7 @@ namespace PoisoningIncidentApplication
         {
             ProductSearchBar.Unfocus();
             SuggestionsCollection.IsVisible = false;
+            SuggestionFrame.IsVisible = false;
            
             string searchTerm = ProductSearchBar.Text;
             if (!string.IsNullOrEmpty(searchTerm))
@@ -96,6 +100,7 @@ namespace PoisoningIncidentApplication
                 Dispatcher.Dispatch(() =>
                 {
                     SuggestionsCollection.IsVisible = false; // Hide the suggestions
+                    SuggestionFrame.IsVisible= false;
                     ProductSearchBar.Unfocus();
                 });
             }

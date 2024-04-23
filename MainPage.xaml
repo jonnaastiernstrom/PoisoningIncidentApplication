@@ -3,7 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PoisoningIncidentApplication.MainPage"
-             Title="Hem">
+             Title="">
 
     <ScrollView>
         <VerticalStackLayout Spacing="15" HorizontalOptions="FillAndExpand" Padding="0">
@@ -17,10 +17,12 @@
                        Margin="0,10,50,0" />-->
                 <Image Source="gic_logo.png"
                        WidthRequest="300"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center"
+                       Margin="0,20,0,15"
+                       />
             </HorizontalStackLayout>
 
-            <VerticalStackLayout HorizontalOptions="CenterAndExpand" Spacing="15" Padding="0">
+            <VerticalStackLayout HorizontalOptions="CenterAndExpand" Padding="0">
 
 
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="0">
@@ -53,12 +55,19 @@
 
 
                 </HorizontalStackLayout>
+
+                <Frame x:Name="SuggestionFrame" Margin="10,0,90,0"
+           IsVisible="{Binding IsSuggestionsVisible}"          
+           Padding="0"
+           HasShadow="False"
+           BorderColor="LightGray" >
                 <CollectionView x:Name="SuggestionsCollection"
                                 IsVisible="{Binding IsSuggestionsVisible}"
                                 SelectionMode="Single"
                                 SelectionChanged="OnSuggestionSelected"
                                 MaximumHeightRequest="100"
-                                Margin="15,0,15,0">
+                                Margin="15,0,15,0"                    
+                               VerticalScrollBarVisibility="Always">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -79,7 +88,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-
+                </Frame>
                 <Label x:Name="SearchResultsLabel"
                        HorizontalOptions="Center"
                        HorizontalTextAlignment="Center"
