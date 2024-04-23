@@ -62,6 +62,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\GIC_logo.png" />
 	  <None Remove="Resources\Images\giftinformationscentralen_logo.png" />
 	</ItemGroup>
 
