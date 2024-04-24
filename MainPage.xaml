@@ -9,12 +9,7 @@
         <VerticalStackLayout Spacing="15" HorizontalOptions="FillAndExpand" Padding="0">
 
             <HorizontalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand">
-                <!--<Label x:Name="TitelLabel"
-                       Text="Giftinformationscentralen" 
-
-                       VerticalOptions="Center"
-                       HorizontalTextAlignment="Start"
-                       Margin="0,10,50,0" />-->
+              
                 <Image Source="gic_logo.png"
                        WidthRequest="300"
                        VerticalOptions="Center"
@@ -32,7 +27,9 @@
                     Padding="0"   
                     HorizontalOptions="Center"  
                     VerticalOptions="Center">
+                        
                 <SearchBar x:Name="ProductSearchBar"
+                           
                             Placeholder="Sök..."
                             VerticalOptions="Center"
                             BackgroundColor="White"
@@ -109,8 +106,24 @@
                        Margin="20,0,20,0"
                        LineBreakMode="WordWrap"
                        MaxLines="0" />
+
+                <Button x:Name="NonEmergencyCallButton"
+        Text="I mindre akuta fall 010-456 6700"
+        BackgroundColor="#143c64"
+        TextColor="White"
+        Clicked="OnNonEmergencyButtonClicked"
+        Margin="10" />
+                <Button x:Name="EmergencyCallButton"
+  Text="När det är akut 112"
+  BackgroundColor="#c41b1b"
+  TextColor="White"
+  Clicked="OnEmergencyButtonClicked"
+  Margin="10" />
+
             </VerticalStackLayout>
       
         </VerticalStackLayout>
+        
     </ScrollView>
+    
 </ContentPage>

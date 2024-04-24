@@ -1,7 +1,8 @@
 ﻿using Microsoft.Maui.Controls;
 using System.Globalization;
 
-
+using Microsoft.Maui.ApplicationModel.Communication;
+using Android.Content;
 namespace PoisoningIncidentApplication
 {
     public partial class MainPage : ContentPage
@@ -129,7 +130,45 @@ namespace PoisoningIncidentApplication
             }
         }
 
+        private async void OnEmergencyButtonClicked(object sender, EventArgs e)
+        {
+            bool isConfirmed = await DisplayAlert("Call Emergency", "Are you sure you want to call emergency services?", "Yes", "No");
+            if (isConfirmed)
+            {
+                try
+                {
+                    MakePhoneCall("112");
+                }
+                catch (Exception ex)
+                {
+                    // Consider showing the exception message to understand what's going wrong
+                    await DisplayAlert("Error", ex.Message, "OK");
+                }
+            }
+        }
 
 
+        private async void OnNonEmergencyButtonClicked(object sender, EventArgs e)
+        {
+            bool isConfirmed = await DisplayAlert("Call Non-Emergency", "Are you sure you want to call the non-emergency number?", "Yes", "No");
+            if (isConfirmed)
+            {
+                MakePhoneCall("010-456 6700");
+            }
+        }
+
+#if ANDROID
+        private void MakePhoneCall(string number)
+        {
+            var intent = new Intent(Intent.ActionCall);
+            intent.SetData(Android.Net.Uri.Parse($"tel:{number}"));
+            // Add the FLAG_ACTIVITY_NEW_TASK flag as required for calling from outside an Activity context.
+            intent.AddFlags(ActivityFlags.NewTask);
+            Android.App.Application.Context.StartActivity(intent);
+        }
+#endif
     }
+
+
 }
+
