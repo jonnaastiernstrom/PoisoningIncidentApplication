@@ -54,11 +54,11 @@
                 </HorizontalStackLayout>
 
                 <Frame x:Name="SuggestionFrame" Margin="10,0,90,0"
-           IsVisible="{Binding IsSuggestionsVisible}"          
-           Padding="0"
-           HasShadow="False"
-           BorderColor="LightGray" >
-                <CollectionView x:Name="SuggestionsCollection"
+                       IsVisible="{Binding IsSuggestionsVisible}"          
+                       Padding="0"
+                       HasShadow="False"
+                       BorderColor="LightGray" >    
+                    <CollectionView x:Name="SuggestionsCollection"
                                 IsVisible="{Binding IsSuggestionsVisible}"
                                 SelectionMode="Single"
                                 SelectionChanged="OnSuggestionSelected"
@@ -103,31 +103,31 @@
 
                 <Label x:Name="DescriptionLabel"
                        FontSize="16"
-                      MinimumHeightRequest="200"
+                       MinimumHeightRequest="200"
                        MinimumWidthRequest="450"
                        Padding="20,15,20,0"                     
-       Text="{Binding Description}"
-       BackgroundColor="{Binding DangerLevelColor}"
-       HorizontalOptions="Start"
-       HorizontalTextAlignment="Start"
-       VerticalTextAlignment="Start"
-       Margin="10,0,10,0"
-       LineBreakMode="WordWrap"
-       MaxLines="0" />
+                       Text="{Binding Description}"
+                       BackgroundColor="{Binding DangerLevelColor}"
+                       HorizontalOptions="Start"
+                       HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Start"
+                       Margin="10,0,10,0"
+                       LineBreakMode="WordWrap"
+                       MaxLines="0" />
 
 
                 <Button x:Name="NonEmergencyCallButton"
-        Text="I mindre akuta fall 010-456 6700"
-        BackgroundColor="#143c64"
-        TextColor="White"
-        Clicked="OnNonEmergencyButtonClicked"
-        Margin="10" />
+                        Text="I mindre akuta fall 010-456 6700"
+                        BackgroundColor="#143c64"
+                        TextColor="White"
+                        Clicked="OnNonEmergencyButtonClicked"
+                        Margin="10" />
                 <Button x:Name="EmergencyCallButton"
-  Text="När det är akut 112"
-  BackgroundColor="#c41b1b"
-  TextColor="White"
-  Clicked="OnEmergencyButtonClicked"
-  Margin="10" />
+                        Text="När det är akut 112"
+                        BackgroundColor="#c41b1b"
+                        TextColor="White"
+                        Clicked="OnEmergencyButtonClicked"
+                        Margin="10" />
 
             </VerticalStackLayout>
       

@@ -3,6 +3,8 @@ using System.Globalization;
 using Microsoft.Maui.ApplicationModel.Communication;
 using Android.Content;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
 namespace PoisoningIncidentApplication
 {
     public partial class MainPage : ContentPage, INotifyPropertyChanged
@@ -42,7 +44,7 @@ namespace PoisoningIncidentApplication
             BindingContext = this;
         }
 
-       
+
         private async void ProductSearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
             const int itemHeight = 18; // The estimated height of each item
@@ -62,7 +64,7 @@ namespace PoisoningIncidentApplication
             else
             {
                 SuggestionsCollection.IsVisible = false;
-                SuggestionFrame.IsVisible= false;
+                SuggestionFrame.IsVisible = false;
             }
 
             if (string.IsNullOrWhiteSpace(e.NewTextValue))
@@ -77,13 +79,14 @@ namespace PoisoningIncidentApplication
 
         }
 
-    
+
         private async void OnSearchClicked(object sender, EventArgs e)
         {
+            Debug.WriteLine("Starting heavy operation");
             ProductSearchBar.Unfocus();
             SuggestionsCollection.IsVisible = false;
             SuggestionFrame.IsVisible = false;
-           
+
             string searchTerm = ProductSearchBar.Text;
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -91,6 +94,7 @@ namespace PoisoningIncidentApplication
                 searchTerm = char.ToUpper(searchTerm[0], CultureInfo.CurrentCulture) + searchTerm.Substring(1).ToLower(CultureInfo.CurrentCulture);
                 await PerformSearch(searchTerm);
             }
+            Debug.WriteLine("Operation completed");
         }
 
 
@@ -104,155 +108,25 @@ namespace PoisoningIncidentApplication
                 ProductSearchBar.Text = selectedItem; // Set the selected item as the search bar text
                 DescriptionHeaderLabel.IsVisible = true;
 
-                // Clear selection
+                //Clear selection
                 ((CollectionView)sender).SelectedItem = null;
 
-                // Trigger the search
+                //Trigger the search
                 await PerformSearch(selectedItem);
 
-                // Ensure we are on the main thread when we update the UI
+                //Ensure we are on the main thread when we update the UI
                 Dispatcher.Dispatch(() =>
                 {
                     SuggestionsCollection.IsVisible = false; // Hide the suggestions
-                    SuggestionFrame.IsVisible= false;
+                    SuggestionFrame.IsVisible = false;
                     ProductSearchBar.Unfocus();
                 });
             }
         }
 
-
-        //private async Task PerformSearch(string searchTerm)
-        //{
-        //    if (!string.IsNullOrWhiteSpace(searchTerm))
-        //    {
-        //        var productName = await _databaseService.GetProductByNameAsync(searchTerm);
-        //        if (productName != null)
-        //        {
-        //            string description = await _databaseService.GetProductDescriptionByNameAsync(productName);
-        //            DescriptionHeaderLabel.IsVisible = true;
-        //            SearchResultsLabel.Text = $"Hittade 1 träff på din sökning: {productName}";
-        //            DescriptionLabel.IsVisible = true;
-        //            DescriptionLabel.Text = description;
-        //        }
-        //        else
-        //        {
-        //            SearchResultsLabel.Text = $"Hittade 0 träffar på din sökning: {searchTerm}";
-        //            DescriptionHeaderLabel.IsVisible = false;
-        //            DescriptionLabel.IsVisible = false;
-        //        }
-        //    }
-        //}
-        // This property is used to bind the background color in XAML.
-        private string GetColorByDangerLevel(int dangerLevel)
-        {
-            return dangerLevel switch
-            {
-                0 => "#ebedec",  
-                1 => "#ddecc5",  
-                2 => "#d2e6d2",   
-                3 => "#cddcf0",  
-                4 => "#fee4a5",  
-                5 => "#d68c45",   
-                6 => "#c41b1b",   
-                _ => "#808080",   
-            };
-        }
-
-
-        public string DangerLevelColor { get; set; }
-       private FormattedString CreateFormattedDescription(string description)
-{
-    var formattedDescription = new FormattedString();
-    string[] wordsToBold = { "inte", "genast", "omedelbart", "112" }; // Single words to bold
-    string[] phrasesToBold = { "Riskabel produkt!", "Frätande produkt!", "Ring 112" }; // Phrases to bold
-
-    string[] lines = description.Split('\n'); // Split by new lines
-
-    foreach (var line in lines)
-    {
-        if (!string.IsNullOrWhiteSpace(line))
-        {
-            // Add a line break before each new line, except the first
-            if (formattedDescription.Spans.Count > 0)
-            {
-                formattedDescription.Spans.Add(new Span { Text = "\n" });
-            }
-
-            // Handle bullet points
-            string trimmedLine = line.TrimStart('•', ' ').TrimEnd();
-            string bulletPoint = line.StartsWith("•") ? "• " : "";
-
-            int currentIndex = 0; // Current index in the trimmed line
-
-            while (currentIndex < trimmedLine.Length)
-            {
-                bool matched = false;
-
-                // Check for phrases first
-                foreach (var phrase in phrasesToBold)
-                {
-                    if (trimmedLine.IndexOf(phrase, currentIndex) == currentIndex)
-                    {
-                        // Add bullet point if at the start of the line
-                        if (currentIndex == 0)
-                        {
-                            formattedDescription.Spans.Add(new Span { Text = bulletPoint });
-                        }
-
-                        // Add the phrase with bold
-                        formattedDescription.Spans.Add(new Span
-                        {
-                            Text = trimmedLine.Substring(currentIndex, phrase.Length) + " ",
-                            FontAttributes = FontAttributes.Bold
-                        });
-                        currentIndex += phrase.Length + 1; // Skip past the phrase
-                        matched = true;
-                        break;
-                    }
-                }
-
-                // If no phrase was matched, process the next word
-                if (!matched)
-                {
-                    int nextSpace = trimmedLine.IndexOf(' ', currentIndex);
-                    if (nextSpace == -1) nextSpace = trimmedLine.Length;
-                    string word = trimmedLine.Substring(currentIndex, nextSpace - currentIndex);
-
-                    // Add bullet point if at the start of the line
-                    if (currentIndex == 0 && !string.IsNullOrEmpty(bulletPoint))
-                    {
-                        formattedDescription.Spans.Add(new Span { Text = bulletPoint });
-                    }
-
-                    // Check for single bold words
-                    Span span = new Span
-                    {
-                        Text = word + " ",
-                        FontAttributes = wordsToBold.Contains(word) ? FontAttributes.Bold : FontAttributes.None
-                    };
-
-                    formattedDescription.Spans.Add(span);
-                    currentIndex = nextSpace + 1;
-                }
-            }
-        }
-    }
-
-    return formattedDescription;
-}
-
-
-
-
-
-
-
-
-
-
-
         private async Task PerformSearch(string searchTerm)
         {
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 var productName = await _databaseService.GetProductByNameAsync(searchTerm);
@@ -260,12 +134,10 @@ namespace PoisoningIncidentApplication
                 {
                     string description = await _databaseService.GetProductDescriptionByNameAsync(productName);
                     int dangerLevel = await _databaseService.GetProductDangerLevelByNameAsync(productName); // Get the danger level
-                    DangerLevelColor = GetColorByDangerLevel(dangerLevel); // Set the color based on the danger level
-
-                    //DescriptionHeaderLabel.IsVisible = true;
+                    DangerLevelColor = GetColorByDangerLevel(dangerLevel); // Set the color based on the danger level                  
                     SearchResultsLabel.Text = $"Hittade 1 träff på din sökning: {productName}";
                     DescriptionLabel.IsVisible = true;
-                    DescriptionLabel.FormattedText = CreateFormattedDescription(description);
+                    DescriptionLabel.FormattedText = description;
 
                     OnPropertyChanged(nameof(DangerLevelColor)); // Notify the UI of the color change
                 }
@@ -276,7 +148,30 @@ namespace PoisoningIncidentApplication
                     DescriptionLabel.IsVisible = false;
                 }
             }
+
         }
+
+
+
+        //This property is used to bind the background color in XAML.
+        private string GetColorByDangerLevel(int dangerLevel)
+        {
+            return dangerLevel switch
+            {
+                0 => "#ebedec",
+                1 => "#ddecc5",
+                2 => "#d2e6d2",
+                3 => "#cddcf0",
+                4 => "#fee4a5",
+                5 => "#d68c45",
+                6 => "#c41b1b",
+                _ => "#808080",
+            };
+        }
+
+
+        public string DangerLevelColor { get; set; }
+
 
         private async void OnEmergencyButtonClicked(object sender, EventArgs e)
         {
@@ -319,4 +214,3 @@ namespace PoisoningIncidentApplication
 
 
 }
-
