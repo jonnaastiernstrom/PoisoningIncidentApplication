@@ -160,86 +160,67 @@ namespace PoisoningIncidentApplication
 
 
         public string DangerLevelColor { get; set; }
-       private FormattedString CreateFormattedDescription(string description)
-{
-    var formattedDescription = new FormattedString();
-    string[] wordsToBold = { "inte", "genast", "omedelbart", "112" }; // Single words to bold
-    string[] phrasesToBold = { "Riskabel produkt!", "Frätande produkt!", "Ring 112" }; // Phrases to bold
-
-    string[] lines = description.Split('\n'); // Split by new lines
-
-    foreach (var line in lines)
-    {
-        if (!string.IsNullOrWhiteSpace(line))
+        private FormattedString CreateFormattedDescription(string description)
         {
-            // Add a line break before each new line, except the first
-            if (formattedDescription.Spans.Count > 0)
+            var formattedDescription = new FormattedString();
+            var wordsToBold = new HashSet<string> { "inte", "genast", "omedelbart", "112" };
+            var phrasesToBold = new List<string> { "Riskabel produkt!", "Frätande produkt!", "Ring 112" };
+
+            string[] lines = description.Split('\n');
+
+            foreach (var line in lines)
             {
-                formattedDescription.Spans.Add(new Span { Text = "\n" });
-            }
-
-            // Handle bullet points
-            string trimmedLine = line.TrimStart('•', ' ').TrimEnd();
-            string bulletPoint = line.StartsWith("•") ? "• " : "";
-
-            int currentIndex = 0; // Current index in the trimmed line
-
-            while (currentIndex < trimmedLine.Length)
-            {
-                bool matched = false;
-
-                // Check for phrases first
-                foreach (var phrase in phrasesToBold)
+                if (!string.IsNullOrWhiteSpace(line))
                 {
-                    if (trimmedLine.IndexOf(phrase, currentIndex) == currentIndex)
+                    if (formattedDescription.Spans.Count > 0)
                     {
-                        // Add bullet point if at the start of the line
-                        if (currentIndex == 0)
+                        formattedDescription.Spans.Add(new Span { Text = "\n" });
+                    }
+
+                    string trimmedLine = line.TrimStart('•', ' ').TrimEnd();
+                    string bulletPoint = line.StartsWith("•") ? "• " : "";
+
+                    int currentIndex = 0;
+                    bool isFirstToken = true;
+
+                    while (currentIndex < trimmedLine.Length)
+                    {
+                        if (isFirstToken && bulletPoint != "")
                         {
                             formattedDescription.Spans.Add(new Span { Text = bulletPoint });
+                            isFirstToken = false;
                         }
 
-                        // Add the phrase with bold
-                        formattedDescription.Spans.Add(new Span
+                        int nextSpace = trimmedLine.IndexOf(' ', currentIndex);
+                        if (nextSpace == -1) nextSpace = trimmedLine.Length;
+
+                        string word = trimmedLine.Substring(currentIndex, nextSpace - currentIndex);
+                        string remainingText = trimmedLine.Substring(currentIndex);
+
+                        // Match phrases first
+                        var matchedPhrase = phrasesToBold.FirstOrDefault(phrase => remainingText.StartsWith(phrase));
+                        if (matchedPhrase != null)
                         {
-                            Text = trimmedLine.Substring(currentIndex, phrase.Length) + " ",
-                            FontAttributes = FontAttributes.Bold
-                        });
-                        currentIndex += phrase.Length + 1; // Skip past the phrase
-                        matched = true;
-                        break;
+                            formattedDescription.Spans.Add(new Span
+                            {
+                                Text = matchedPhrase + " ",
+                                FontAttributes = FontAttributes.Bold
+                            });
+                            currentIndex += matchedPhrase.Length + 1; // Skip past the phrase
+                        }
+                        else
+                        {
+                            // Match single bold words or normal text
+                            FontAttributes attrs = wordsToBold.Contains(word) ? FontAttributes.Bold : FontAttributes.None;
+                            formattedDescription.Spans.Add(new Span { Text = word + " ", FontAttributes = attrs });
+                            currentIndex = nextSpace + 1;
+                        }
                     }
-                }
-
-                // If no phrase was matched, process the next word
-                if (!matched)
-                {
-                    int nextSpace = trimmedLine.IndexOf(' ', currentIndex);
-                    if (nextSpace == -1) nextSpace = trimmedLine.Length;
-                    string word = trimmedLine.Substring(currentIndex, nextSpace - currentIndex);
-
-                    // Add bullet point if at the start of the line
-                    if (currentIndex == 0 && !string.IsNullOrEmpty(bulletPoint))
-                    {
-                        formattedDescription.Spans.Add(new Span { Text = bulletPoint });
-                    }
-
-                    // Check for single bold words
-                    Span span = new Span
-                    {
-                        Text = word + " ",
-                        FontAttributes = wordsToBold.Contains(word) ? FontAttributes.Bold : FontAttributes.None
-                    };
-
-                    formattedDescription.Spans.Add(span);
-                    currentIndex = nextSpace + 1;
                 }
             }
-        }
-    }
 
-    return formattedDescription;
-}
+            return formattedDescription;
+        }
 
 
 
