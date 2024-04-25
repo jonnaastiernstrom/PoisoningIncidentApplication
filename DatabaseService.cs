@@ -12,16 +12,16 @@ namespace PoisoningIncidentApplication
     {
         private readonly string _connectionString;
 
-     
+
         public DatabaseService()
         {
             // Default connection string for Windows and iOS
             _connectionString = "Host=localhost;Port=5432;Username=postgres;Password=Edgar20230414!;Database=giftinformationscentralendb";
 
-            #if ANDROID
+#if ANDROID
             // Connection string for Android emulator
             _connectionString = "Host=10.0.2.2;Port=5432;Username=postgres;Password=Edgar20230414!;Database=giftinformationscentralendb";
-            #endif
+#endif
         }
 
 
@@ -32,10 +32,10 @@ namespace PoisoningIncidentApplication
             return connection;
         }
 
-       public async Task<string> GetProductByNameAsync(string productName)
-       {
+        public async Task<string> GetProductByNameAsync(string productName)
+        {
             string product = null;
-            
+
             await using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
@@ -52,10 +52,10 @@ namespace PoisoningIncidentApplication
                     }
                 }
             }
-            
+
             return product;
-       }
-       public async Task<string> GetProductDescriptionByNameAsync(string productName)
+        }
+        public async Task<string> GetProductDescriptionByNameAsync(string productName)
         {
             string description = null;
 
@@ -104,6 +104,30 @@ namespace PoisoningIncidentApplication
             }
 
             return products;
+        }
+
+        public async Task<int> GetProductDangerLevelByNameAsync(string productName)
+        {
+            int dangerLevel = 0; // Default to 0 or some default value
+
+            await using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                await using (var command = new NpgsqlCommand("SELECT danger_level FROM products WHERE product_name = @productName", connection))
+                {
+                    command.Parameters.AddWithValue("@productName", productName);
+
+                    await using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            dangerLevel = reader.GetInt32(0); // Read danger level as an integer
+                        }
+                    }
+                }
+            }
+
+            return dangerLevel;
         }
 
 
